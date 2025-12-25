@@ -1,0 +1,81 @@
+Fetching data from CoinPaprika...
+CoinPaprika data saved successfully
+Fetching data from CoinGecko...
+CoinGecko data saved successfully
+Reading CSV...
+CSV data stored successfully
+Traceback (most recent call last):
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "last_success_time" of relation "etl_checkpoint" does not exist
+LINE 1: ...NSERT INTO etl_checkpoint (source, last_run_time, last_succe...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\run_etl.py", line 9, in <module>
+    normalize_data()
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\services\etl_runner.py", line 21, in normalize_data
+    db.commit()
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\sk337\OneDrive\Desktop\kasparro-backend\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "last_success_time" of relation "etl_checkpoint" does not exist
+LINE 1: ...NSERT INTO etl_checkpoint (source, last_run_time, last_succe...
+                                                             ^
+
+[SQL: INSERT INTO etl_checkpoint (source, last_run_time, last_success_time, status) VALUES (%(source)s, %(last_run_time)s, %(last_success_time)s, %(status)s) RETURNING etl_checkpoint.id]
+[parameters: {'source': 'all', 'last_run_time': datetime.datetime(2025, 12, 25, 12, 4, 13, 543174), 'last_success_time': None, 'status': 'running'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)

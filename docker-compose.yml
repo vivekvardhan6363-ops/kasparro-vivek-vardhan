@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14
+    container_name: kasparro_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: kasparro
+      POSTGRES_PASSWORD: kasparro123
+      POSTGRES_DB: coinsdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: kasparro_backend
+    depends_on:
+      - db
+    environment:
+      DB_USER: kasparro
+      DB_PASSWORD: kasparro123
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: coinsdb
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "
+      echo '⏳ Waiting for DB...' &&
+      sleep 5 &&
+      echo '🚀 Starting API...' &&
+      uvicorn api.main:app --host 0.0.0.0 --port 8000 &
+      echo '🧠 Running ETL in background...' &&
+      python -u run_etl.py
+      "
+
+volumes:
+  pgdata:
