@@ -8,8 +8,34 @@ from schemas.models import ETLRun
 from sqlalchemy import desc
 import time
 import uuid
+from apscheduler.schedulers.background import BackgroundScheduler
+
+from ingestion.api_coinpaprika import fetch_coinpaprika
+from ingestion.api_coingecko import fetch_coingecko
+from ingestion.csv_loader import load_csv_data
+from services.etl_runner import normalize_data
+
 
 app = FastAPI()
+scheduler = BackgroundScheduler()
+scheduler.add_job(run_scheduled_etl, "interval", hours=1)  # change to minutes=1 for testing
+scheduler.start()
+
+
+def run_scheduled_etl():
+    print("🔥 Scheduled ETL Started")
+
+    try:
+        fetch_coinpaprika()
+        fetch_coingecko()
+        load_csv_data()
+        normalize_data()
+        print("✅ Scheduled ETL Completed")
+
+    except Exception as e:
+        print("❌ Scheduled ETL Failed:", e)
+
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -107,3 +133,6 @@ def get_stats(db: Session = Depends(get_db)):
             "at": last_failure.finished_at if last_failure else None
         }
     }
+@app.on_event("shutdown")
+def shutdown_event():
+    scheduler.shutdown()
