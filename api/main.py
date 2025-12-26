@@ -14,6 +14,7 @@ from ingestion.api_coinpaprika import fetch_coinpaprika
 from ingestion.api_coingecko import fetch_coingecko
 from ingestion.csv_loader import load_csv_data
 from services.etl_runner import normalize_data
+from schemas.data_response import DataResponse
 def run_scheduled_etl():
     print("🔥 Scheduled ETL Started")
 
@@ -84,7 +85,7 @@ def health_check(db: Session = Depends(get_db)):
         }
 
 
-@app.get("/data")
+@app.get("/data", response_model=DataResponse)
 def get_data(
     page: int = 1,
     limit: int = 10,
@@ -105,11 +106,13 @@ def get_data(
     latency = round((time.time() - start_time) * 1000, 2)
 
     return {
-        "request_id": request_id,
-        "api_latency_ms": latency,
-        "page": page,
-        "limit": limit,
-        "total_records": total,
+        "metadata": {
+            "request_id": request_id,
+            "api_latency_ms": latency,
+            "page": page,
+            "limit": limit,
+            "total_records": total
+        },
         "data": [
             {
                 "id": c.id,

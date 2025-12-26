@@ -15,7 +15,10 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
+    build:
+      context: .
+      network: host
+
     container_name: kasparro_backend
     depends_on:
       - db
@@ -29,12 +32,15 @@ services:
       - "8000:8000"
     command: >
       sh -c "
-      echo '⏳ Waiting for DB...' &&
-      sleep 5 &&
+      echo '⏳ Waiting for DB (handled by script)...' &&
+      echo '🛠️ Creating tables...' &&
+      python create_tables.py &&
       echo '🚀 Starting API...' &&
       uvicorn api.main:app --host 0.0.0.0 --port 8000 &
-      echo '🧠 Running ETL in background...' &&
-      python -u run_etl.py
+      API_PID=$! &&
+      echo '🧠 Running ETL...' &&
+      (python -u run_etl.py || echo '⚠️ ETL Failed but API is running') &&
+      wait $API_PID
       "
 
 volumes:
