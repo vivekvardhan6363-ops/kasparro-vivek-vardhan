@@ -40,17 +40,11 @@ app.include_router(health_router)
 app.include_router(data_router)
 app.include_router(stats_router)
 
+from fastapi.responses import FileResponse
+
 @app.get("/")
 def root():
-    return {
-        "message": "Kasparro Backend API is running 🚀",
-        "endpoints": {
-            "health": "/health",
-            "data": "/data",
-            "stats": "/stats",
-            "docs": "/docs"
-        }
-    }
+    return FileResponse("api/templates/index.html")
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(run_scheduled_etl, "interval", hours=1)
