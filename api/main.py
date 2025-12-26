@@ -70,19 +70,37 @@ def root():
     }
 
 @app.get("/health")
-def health_check(db: Session = Depends(get_db)):
+@app.get("/health")
+def health(db: Session = Depends(get_db)):
+    db_status = "down"
+    etl_status = "unknown"
+
     try:
+        # Check DB connectivity
         db.execute(text("SELECT 1"))
-        return {
-            "status": "healthy",
-            "database": "connected"
-        }
-    except Exception as e:
-        return {
-            "status": "unhealthy",
-            "database": "disconnected",
-            "error": str(e)
-        }
+        db_status = "up"
+
+        # Check last ETL run status
+        result = db.execute(
+            text("""
+                SELECT status
+                FROM etl_runs
+                ORDER BY started_at DESC
+                LIMIT 1
+            """)
+        ).fetchone()
+
+        if result:
+            etl_status = result[0]
+
+    except Exception:
+        db_status = "down"
+
+    return {
+        "status": "ok",
+        "database": db_status,
+        "etl_last_run": etl_status
+    }
 
 
 @app.get("/data", response_model=DataResponse)
