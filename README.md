@@ -63,3 +63,6 @@ Run the full test suite (requires DB to be running):
 - **Raw Tables**: We store raw JSON first (`raw_coinpaprika`, etc.) to allow re-processing if business logic changes.
 - **Checkpoints**: Essential for performance; prevents ingesting millions of duplicate rows on restart.
 - **Hybrid Mode**: Solves Windows/Docker networking issues by keeping the API on the host network.
+
+## Deployment
+For AWS deployment instructions (ECR/EC2), please refer to [DEPLOYMENT.md](DEPLOYMENT.md).
